@@ -1,6 +1,9 @@
 # gRedis-cli
 
-使用golang编写的redis命令行查询工具。
+## 介绍
+这是一个使用golang开发的redis交互式命令行，希望能解决一些redis原生cli使用中的痛点。项目处于起步阶段，功能并不完全。
+
+[项目地址](https://github.com/dalebao/gRedis-cli)
 
 ##出发点：
 1. 在工作中，会生成很多规律的redis键，如：test_1,test_2，当需要人肉删除test_*键的时候，使用原生redis-cli，痛苦。
