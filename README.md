@@ -13,7 +13,7 @@
 4. 使用通配符匹配redis键，选择或直接删除redis键
 5. 使用table直观展示redis操作情况
 
-![e](gRedis-cli.png)
+![e](https://github.com/dalebao/gRedis-cli/raw/master/gRedis-cli.png)
 
 ##命令与使用：
 ```
@@ -23,43 +23,44 @@ go run main.go
 ```
 按照流程填写服务器连接信息
 
-###get
+### get
    查询string,hash,list,set,zset类型的数据
     `get redisKey`
     
     
-###keys
+### keys
    使用通配符匹配redis键，返回redis键与对应类型
     `keys *`
     
-###type
+### type
    批量查询redis键类型
     `type redisKey1 redisKey2`
     
-###ttl
+### ttl
    批量查询redis ttl信息
     `ttl redisKey1 redisKey2`
     
-###expire
+### expire
    设置redis键过期时间
    `expire redisKey1 100` 单位秒
    
-###del
+### del
    批量删除redis键
    `del redisKey1 redisKey2`
 
-###rdel
+### rdel
    匹配redis键，直接或选择删除redis键
    `rdel redis*`
    
-###退出
+### 退出
    输入 `quit`
    
 ##接下来要做
 1. 继续完善查询功能
 2. 考虑是否要增加修改redis键内容
 3. 增加配置保存功能，避免重复输入配置信息
-4. 期待在issue中与我交流
+4. 思考大量数据redis键的处理方式
+5. 期待在issue中与我交流
    
 ##鸣谢
 [命令行构建工具](https://github.com/AlecAivazis/survey)
