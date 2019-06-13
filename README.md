@@ -20,7 +20,7 @@
 
 ##命令与使用：
 ```
-git clone 
+git clone https://github.com/dalebao/gRedis-cli.git
 cd gRedis-cli
 go run main.go
 ```
