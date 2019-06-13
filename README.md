@@ -5,11 +5,11 @@
 
 [项目地址](https://github.com/dalebao/gRedis-cli)
 
-##出发点：
+## 出发点：
 1. 在工作中，会生成很多规律的redis键，如：test_1,test_2，当需要人肉删除test_*键的时候，使用原生redis-cli，痛苦。
 2. 在工作中，redis键太多，常常会让人忘记redis键的类型，需要先type再用对应类型的查询命令查询，太累。
 
-##特点：
+## 特点：
 1. 使用一个命令，查询string,hash,list,set,zset类型的数据
 2. 批量查询redis键的ttl
 3. 批量查询redis键的类型
@@ -18,7 +18,7 @@
 
 ![e](https://github.com/dalebao/gRedis-cli/raw/master/gRedis-cli.png)
 
-##命令与使用：
+## 命令与使用：
 ```
 git clone https://github.com/dalebao/gRedis-cli.git
 cd gRedis-cli
