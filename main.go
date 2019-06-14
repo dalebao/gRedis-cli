@@ -41,19 +41,18 @@ var simpleQs = []*survey.Question{
 }
 
 func main() {
-	rConfig := pkg.RedisConfig{}
-	if rConfig == (pkg.RedisConfig{}) {
-		err := survey.Ask(simpleQs, &rConfig)
-		if err != nil {
-			fmt.Println(err)
-			return
+	err := choseConfig()
+	for err != nil {
+		tryAgain := true
+		prompt := &survey.Confirm{
+			Message: "是否重新选择",
 		}
-		err = rConfig.Dial()
-		if err != nil {
-			fmt.Println(err)
-			return
+		survey.AskOne(prompt, &tryAgain)
+		if tryAgain {
+			err = choseConfig()
+		} else {
+			err = nil
 		}
-		fmt.Println("链接成功")
 	}
 
 	for {
@@ -79,6 +78,9 @@ func handleCmd(name string) []string {
 	return strings.Split(name, " ")
 }
 
+/**
+解析命令
+ */
 func invokeCmd(r []string) {
 	cmd := r[0]
 	p := r[1:]
@@ -98,7 +100,66 @@ func invokeCmd(r []string) {
 	case "rdel":
 		pkg.HandleCmdRDel(p)
 
-
-
 	}
+}
+
+/**
+选择配置文件
+ */
+func choseConfig() error {
+	zc := pkg.ZC{}
+	rConfig := pkg.RedisConfig{}
+
+	var choseOne string
+
+	existsConfig := zc.ReadConfig()
+	prompt := &survey.Select{
+		Message: "请选择你的配置",
+		Options: existsConfig,
+	}
+	survey.AskOne(prompt, &choseOne)
+
+	if choseOne == "手动输入" {
+		if rConfig == (pkg.RedisConfig{}) {
+			err := survey.Ask(simpleQs, &rConfig)
+			if err != nil {
+				fmt.Println(err)
+				return err
+			}
+			err = rConfig.Dial()
+			if err != nil {
+				fmt.Println("链接失败")
+				return err
+			}
+			successSave := false
+			for !successSave {
+				isSave := false
+				prompt := &survey.Confirm{
+					Message: "链接成功是否保存",
+				}
+				survey.AskOne(prompt, &isSave)
+				if isSave {
+					configName := ""
+					prompt := &survey.Input{
+						Message: "请输入你的配置名称",
+					}
+					survey.AskOne(prompt, &configName, survey.WithValidator(survey.Required))
+					err = zc.SaveConfig(configName, rConfig)
+					if err != nil {
+						fmt.Println(err)
+					}
+					successSave = true
+				}
+			}
+		}
+	} else {
+		rConfig = zc.FindConfig(choseOne)
+		err := rConfig.Dial()
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		fmt.Println("链接成功")
+	}
+	return nil
 }
