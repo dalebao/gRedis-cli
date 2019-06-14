@@ -16,7 +16,7 @@
 4. 使用通配符匹配redis键，选择或直接删除redis键
 5. 使用table直观展示redis操作情况
 
-![e](https://github.com/dalebao/gRedis-cli/raw/master/gRedis-cli.png)
+![e](https://github.com/dalebao/gRedis-cli/raw/master/v1Show.png)
 
 ## 命令与使用：
 ```

@@ -34,7 +34,6 @@ func generateConfigFile() {
 		}
 		defer file.Close()
 	}
-	fmt.Println("file exists")
 }
 
 /**
