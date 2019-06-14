@@ -12,7 +12,7 @@ import (
 redis keys 命令
  */
 func HandleCmdKey(params []string) {
-	res, _ := Client.Keys(params[1]).Result()
+	res, _ := Client.Keys(params[0]).Result()
 
 	var data [][]string
 
@@ -32,7 +32,7 @@ string=>get
 hash=>hgetall
  */
 func HandleCmdGet(params []string) {
-	rKey := params[1]
+	rKey := params[0]
 	rType, _ := Client.Type(rKey).Result()
 	fmt.Println(rType)
 	switch rType {
@@ -86,7 +86,7 @@ func HandleCmdGet(params []string) {
 func HandleCmdType(params []string) {
 	kLen := len(params)
 	var data [][]string
-	for i := 1; i < kLen; i++ {
+	for i := 0; i < kLen; i++ {
 		rKey := params[i]
 		rType, _ := Client.Type(rKey).Result()
 
@@ -103,7 +103,7 @@ func HandleCmdType(params []string) {
 func HandleCmdTTL(params []string) {
 	kLen := len(params)
 	var data [][]string
-	for i := 1; i < kLen; i++ {
+	for i := 0; i < kLen; i++ {
 		rKey := params[i]
 		rType, _ := Client.TTL(rKey).Result()
 
@@ -118,8 +118,8 @@ func HandleCmdTTL(params []string) {
 设置redis键过期时间
  */
 func HandleCmdExpire(params []string) {
-	rKey := params[1]
-	rExpire, _ := strconv.Atoi(params[2])
+	rKey := params[0]
+	rExpire, _ := strconv.Atoi(params[1])
 	Client.Expire(rKey, time.Duration(rExpire)*time.Second)
 
 	var data [][]string
@@ -136,7 +136,7 @@ func HandleCmdDel(params []string) {
 	rLen := len(params)
 
 	var data [][]string
-	for i := 1; i < rLen; i++ {
+	for i := 0; i < rLen; i++ {
 		rKey := params[i]
 		res, _ := Client.Del(rKey).Result()
 		r := "success"
@@ -154,8 +154,8 @@ func HandleCmdDel(params []string) {
 使用通配符匹配redis键进行删除
  */
 func HandleCmdRDel(params []string) {
-	re := params[1]
-	res, _, _ := Client.Scan(0, re, 0).Result()
+	re := params[0]
+	res, _ := ScanKeys(0,re)
 	rLen := len(res)
 	show := false
 	prompt := &survey.Confirm{
@@ -170,10 +170,10 @@ func HandleCmdRDel(params []string) {
 			Options: res,
 		}
 		survey.AskOne(prompt1, &sK)
-		handleDel(sK)
+		HandleCmdDel(sK)
 		return
 	}
-	handleDel(res)
+	HandleCmdDel(res)
 	return
 }
 
@@ -188,20 +188,12 @@ func printTable(data [][]string, k []string) {
 	fmt.Println(t.Render("grid"))
 }
 
-func handleDel(r []string) {
-	rLen := len(r)
+func ScanKeys(cursor uint64, re string) ([]string, uint64) {
 
-	var data [][]string
-	for i := 0; i < rLen; i++ {
-		rKey := r[i]
-		res, _ := Client.Del(rKey).Result()
-		r := "success"
-		if res == 0 {
-			r = "fail"
-		}
-		info := []string{rKey, r}
-		data = append(data, info)
+	res, c, _ := Client.Scan(cursor, re, 100).Result()
+	if c != 0 {
+		r, _ := ScanKeys(c, re)
+		res = append(res, r...)
 	}
-
-	printTable(data, []string{"Key", "result"})
+	return res, c
 }

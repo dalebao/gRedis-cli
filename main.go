@@ -80,21 +80,24 @@ func handleCmd(name string) []string {
 }
 
 func invokeCmd(r []string) {
-	switch r[0] {
+	cmd := r[0]
+	p := r[1:]
+	switch cmd {
 	case "keys":
-		pkg.HandleCmdKey(r)
+		pkg.HandleCmdKey(p)
 	case "get":
-		pkg.HandleCmdGet(r)
+		pkg.HandleCmdGet(p)
 	case "type":
-		pkg.HandleCmdType(r)
+		pkg.HandleCmdType(p)
 	case "ttl":
-		pkg.HandleCmdTTL(r)
+		pkg.HandleCmdTTL(p)
 	case "expire":
-		pkg.HandleCmdExpire(r)
+		pkg.HandleCmdExpire(p)
 	case "del":
-		pkg.HandleCmdDel(r)
+		pkg.HandleCmdDel(p)
 	case "rdel":
-		pkg.HandleCmdRDel(r)
+		pkg.HandleCmdRDel(p)
+
 
 
 	}
