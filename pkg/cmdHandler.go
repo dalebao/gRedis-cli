@@ -11,7 +11,7 @@ import (
 /**
 redis keys 命令
  */
-func HandleCmdKey(params []string) {
+func HandleCmdKey(params []string,e map[string]string) {
 	res, _ := ScanKeys(0,params[0])
 
 	var data [][]string
@@ -31,7 +31,7 @@ redis 获取键内容 命令
 string=>get
 hash=>hgetall
  */
-func HandleCmdGet(params []string) {
+func HandleCmdGet(params []string,e map[string]string) {
 	rKey := params[0]
 	rType, _ := Client.Type(rKey).Result()
 	fmt.Println(rType)
@@ -83,7 +83,7 @@ func HandleCmdGet(params []string) {
 /**
 查询多个redis键的类型
  */
-func HandleCmdType(params []string) {
+func HandleCmdType(params []string,e map[string]string) {
 	kLen := len(params)
 	var data [][]string
 	for i := 0; i < kLen; i++ {
@@ -100,7 +100,7 @@ func HandleCmdType(params []string) {
 /**
 查询多个redis键的ttl
  */
-func HandleCmdTTL(params []string) {
+func HandleCmdTTL(params []string,e map[string]string) {
 	kLen := len(params)
 	var data [][]string
 	for i := 0; i < kLen; i++ {
@@ -117,7 +117,7 @@ func HandleCmdTTL(params []string) {
 /**
 设置redis键过期时间
  */
-func HandleCmdExpire(params []string) {
+func HandleCmdExpire(params []string,e map[string]string) {
 	rKey := params[0]
 	rExpire, _ := strconv.Atoi(params[1])
 	Client.Expire(rKey, time.Duration(rExpire)*time.Second)
@@ -132,7 +132,7 @@ func HandleCmdExpire(params []string) {
 /**
 删除redis键，多个删除
  */
-func HandleCmdDel(params []string) {
+func HandleCmdDel(params []string,e map[string]string) {
 	rLen := len(params)
 
 	var data [][]string
@@ -153,7 +153,7 @@ func HandleCmdDel(params []string) {
 /**
 使用通配符匹配redis键进行删除
  */
-func HandleCmdRDel(params []string) {
+func HandleCmdRDel(params []string,e map[string]string) {
 	re := params[0]
 	res, _ := ScanKeys(0,re)
 	rLen := len(res)
@@ -170,10 +170,10 @@ func HandleCmdRDel(params []string) {
 			Options: res,
 		}
 		survey.AskOne(prompt1, &sK)
-		HandleCmdDel(sK)
+		HandleCmdDel(sK,e)
 		return
 	}
-	HandleCmdDel(res)
+	HandleCmdDel(res,e)
 	return
 }
 

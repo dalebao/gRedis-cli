@@ -37,3 +37,12 @@ func TestConfigConfigSave(t *testing.T) {
 	err := zc.SaveConfig("config3",pkg.RedisConfig{"192.168.20.247", "6379", "51cartest1234", ""})
 	fmt.Println(err)
 }
+
+func TestCmdKeys(t *testing.T){
+	e := make(map[string]string)
+	e["sort"] = "key"
+	//e["only"] = "string,hash"
+	e["expect"] = "hash"
+	key := pkg.Keys{}
+	key.ExplodeECmd(e)
+}
