@@ -16,7 +16,7 @@
 4. 使用通配符匹配redis键，选择或直接删除redis键
 5. 使用table直观展示redis操作情况
 
-![e](https://github.com/dalebao/gRedis-cli/raw/master/v1Show.png)
+[e](https://github.com/dalebao/gRedis-cli/raw/master/v1Show.png)
 
 ## 命令与使用：
 ```
@@ -33,7 +33,19 @@ go run main.go
     
 ### keys
    使用通配符匹配redis键，返回redis键与对应类型
+   
     `keys *`
+    
+   #### 辅助命令
+  `keys * -only=string,hash limit=10 sort=asc`
+  
+   1. only=string,hash 仅展示 string 和 hash 类型键,多种类型用 *,* 分割
+   
+   2. expect=string,hash 排除展示 string 和 hash 类型键,多种类型用 *,* 分割
+   
+   3. limit=10 控制展示数据数量，取N条数据展示
+   
+   4. sort=asc 按照键类型名称的升降序排序展示数据 
     
 ### type
    批量查询redis键类型

@@ -34,15 +34,24 @@ func TestConfigSearch(t *testing.T) {
 func TestConfigConfigSave(t *testing.T) {
 	zc := &pkg.ZC{}
 	zc.ReadConfig()
-	err := zc.SaveConfig("config3",pkg.RedisConfig{"192.168.20.247", "6379", "51cartest1234", ""})
+	err := zc.SaveConfig("config3", pkg.RedisConfig{"192.168.20.247", "6379", "51cartest1234", ""})
 	fmt.Println(err)
 }
 
-func TestCmdKeys(t *testing.T){
+//
+//func TestCmdKeys(t *testing.T){
+//	e := make(map[string]string)
+//	e["sort"] = "key"
+//	//e["only"] = "string,hash"
+//	e["expect"] = "hash"
+//	key := pkg.Keys{}
+//
+//}
+
+func TestHandleCmdKey(t *testing.T) {
+	r := []string{"*"}
 	e := make(map[string]string)
-	e["sort"] = "key"
-	//e["only"] = "string,hash"
-	e["expect"] = "hash"
-	key := pkg.Keys{}
-	key.ExplodeECmd(e)
+	e["sort"] = "desc"
+	e["limit"] = "100"
+	pkg.HandleCmdKey(r, e)
 }
