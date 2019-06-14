@@ -12,7 +12,7 @@ import (
 redis keys 命令
  */
 func HandleCmdKey(params []string) {
-	res, _ := Client.Keys(params[0]).Result()
+	res, _ := ScanKeys(0,params[0])
 
 	var data [][]string
 
