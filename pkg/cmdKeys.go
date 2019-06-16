@@ -15,6 +15,7 @@ type Keys struct {
 	Only   map[string]bool
 	Sort   int
 	Limit  int
+	Export string
 }
 
 func (keys *Keys) Set(e map[string]string) {
@@ -48,6 +49,12 @@ func (keys *Keys) Set(e map[string]string) {
 		if err != nil {
 			keys.Limit = -1
 		}
+	} else {
+		keys.Limit = -1
+	}
+
+	if e["export"] != "" {
+		keys.Export = e["export"]
 	}
 }
 
@@ -57,7 +64,7 @@ func (keys *Keys) DiffType(res []string) (data [][]string) {
 	var l int
 	if keys.Limit != -1 {
 		l = keys.Limit
-	}else{
+	} else {
 		l = len(res)
 	}
 	for _, v := range res[:l] {

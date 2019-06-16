@@ -46,6 +46,8 @@ go run main.go
    3. limit=10 控制展示数据数量，取N条数据展示
    
    4. sort=asc 按照键类型名称的升降序排序展示数据 
+   
+   5. export=csv 将结果导出成csv文件 目前支持类型 `csv`
     
 ### type
    批量查询redis键类型

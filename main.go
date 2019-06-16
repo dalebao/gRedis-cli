@@ -61,8 +61,8 @@ func main() {
 			Message: "请输入命令:",
 		}
 		survey.AskOne(prompt, &name, survey.WithValidator(survey.Required))
-		r,e := HandleCmd(strings.TrimSpace(name))
-		invokeCmd(r,e)
+		r, e := HandleCmd(strings.TrimSpace(name))
+		invokeCmd(r, e)
 
 		if r[0] == "quit" {
 			fmt.Println("Bye~ Bye!!")
@@ -85,9 +85,11 @@ func HandleCmd(name string) ([]string, map[string]string) {
 	r := strings.Split(all[0], " ")
 	eCmd := make(map[string]string)
 
-	for _, v := range strings.Split(all[1], " ") {
-		n := strings.Split(v, "=")
-		eCmd[n[0]] = n[1]
+	if len(all) == 2 {
+		for _, v := range strings.Split(all[1], " ") {
+			n := strings.Split(v, "=")
+			eCmd[n[0]] = n[1]
+		}
 	}
 
 	return r, eCmd
@@ -96,24 +98,24 @@ func HandleCmd(name string) ([]string, map[string]string) {
 /**
 解析命令
  */
-func invokeCmd(r []string,e map[string]string) {
+func invokeCmd(r []string, e map[string]string) {
 	cmd := r[0]
 	p := r[1:]
 	switch cmd {
 	case "keys":
-		pkg.HandleCmdKey(p,e)
+		pkg.HandleCmdKey(p, e)
 	case "get":
-		pkg.HandleCmdGet(p,e)
+		pkg.HandleCmdGet(p, e)
 	case "type":
-		pkg.HandleCmdType(p,e)
+		pkg.HandleCmdType(p, e)
 	case "ttl":
-		pkg.HandleCmdTTL(p,e)
+		pkg.HandleCmdTTL(p, e)
 	case "expire":
-		pkg.HandleCmdExpire(p,e)
+		pkg.HandleCmdExpire(p, e)
 	case "del":
-		pkg.HandleCmdDel(p,e)
+		pkg.HandleCmdDel(p, e)
 	case "rdel":
-		pkg.HandleCmdRDel(p,e)
+		pkg.HandleCmdRDel(p, e)
 	default:
 		fmt.Println("命令不存在")
 	}
@@ -163,7 +165,10 @@ func choseConfig() error {
 					err = zc.SaveConfig(configName, rConfig)
 					if err != nil {
 						fmt.Println(err)
+					} else {
+						successSave = true
 					}
+				} else {
 					successSave = true
 				}
 			}

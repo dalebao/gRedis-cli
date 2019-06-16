@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/AlecAivazis/survey"
 	"github.com/bndr/gotabulate"
+	"github.com/dalebao/gRedis-cli/export"
 	"strconv"
 	"time"
 )
@@ -12,11 +13,22 @@ import (
 redis keys 命令
  */
 func HandleCmdKey(params []string, e map[string]string) {
+	header := []string{"Type", "Key"}
 	res, _ := ScanKeys(0, params[0])
 	keys := &Keys{}
 	keys.Set(e)
 	data := keys.DiffType(res)
-	printTable(data, []string{"Type", "Key"})
+	if keys.Export != "" {
+		uExport := &export.UExport{FileName: "keys-" + params[0], Data: data, Type: keys.Export, Header: header}
+		fileName, err := uExport.Export()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println("导出结果成功，文件名为：" + fileName)
+	} else {
+		printTable(data, header)
+	}
 }
 
 /**
