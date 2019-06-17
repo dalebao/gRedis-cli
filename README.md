@@ -26,6 +26,18 @@ go run main.go
 ```
 按照流程填写服务器连接信息
 
+**可执行文件在这~**
+
+[[release](https://github.com/dalebao/gRedis-cli/releases)]
+
+linux + macos
+```
+$ sudo chmod +x main
+$ ./main
+```
+windows 双击打开即可
+
+
 ### get
    查询string,hash,list,set,zset类型的数据
     `get redisKey`
