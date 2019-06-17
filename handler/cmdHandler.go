@@ -2,7 +2,7 @@ package handler
 
 import (
 	"fmt"
-	"github.com/AlecAivazis/survey"
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/bndr/gotabulate"
 	"github.com/dalebao/gRedis-cli/export"
 	"github.com/dalebao/gRedis-cli/pkg"
