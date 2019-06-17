@@ -13,7 +13,7 @@ import (
 redis keys 命令
  */
 func HandleCmdKey(params []string, e map[string]string) {
-	header := []string{"Type", "Key"}
+	header := []string{"Type", "Key", "TTL"}
 	res, _ := ScanKeys(0, params[0])
 	keys := &Keys{}
 	keys.Set(e)

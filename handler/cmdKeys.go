@@ -77,17 +77,20 @@ func (keys *Keys) DiffType(res []string) (data [][]string) {
 		if lOnly != 0 && keys.Only[rType] == false {
 			continue
 		}
+		ttl, _ := Client.TTL(v).Result()
+
+
 		switch rType {
 		case "string":
-			keys.ST = append(keys.ST, []string{rType, v})
+			keys.ST = append(keys.ST, []string{rType, v, ttl.String()})
 		case "hash":
-			keys.HT = append(keys.HT, []string{rType, v})
+			keys.HT = append(keys.HT, []string{rType, v, ttl.String()})
 		case "list":
-			keys.LT = append(keys.LT, []string{rType, v})
+			keys.LT = append(keys.LT, []string{rType, v, ttl.String()})
 		case "set":
-			keys.SetT = append(keys.SetT, []string{rType, v})
+			keys.SetT = append(keys.SetT, []string{rType, v, ttl.String()})
 		case "zset":
-			keys.ZST = append(keys.ZST, []string{rType, v})
+			keys.ZST = append(keys.ZST, []string{rType, v, ttl.String()})
 		}
 	}
 	//desc
