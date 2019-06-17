@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/AlecAivazis/survey"
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/dalebao/gRedis-cli/handler"
 	"github.com/dalebao/gRedis-cli/pkg"
 	"strings"
