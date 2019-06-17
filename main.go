@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/AlecAivazis/survey"
+	"github.com/dalebao/gRedis-cli/handler"
 	"github.com/dalebao/gRedis-cli/pkg"
 	"strings"
 )
@@ -64,13 +65,11 @@ func main() {
 		}
 		survey.AskOne(prompt, &name, survey.WithValidator(survey.Required))
 		r, e := HandleCmd(strings.TrimSpace(name))
-		invokeCmd(r, e)
-
 		if r[0] == "quit" {
 			fmt.Println("Bye~ Bye!!")
 			break
 		}
-
+		invokeCmd(r, e)
 	}
 
 }
@@ -105,19 +104,19 @@ func invokeCmd(r []string, e map[string]string) {
 	p := r[1:]
 	switch cmd {
 	case "keys":
-		pkg.HandleCmdKey(p, e)
+		handler.HandleCmdKey(p, e)
 	case "get":
-		pkg.HandleCmdGet(p, e)
+		handler.HandleCmdGet(p, e)
 	case "type":
-		pkg.HandleCmdType(p, e)
+		handler.HandleCmdType(p, e)
 	case "ttl":
-		pkg.HandleCmdTTL(p, e)
+		handler.HandleCmdTTL(p, e)
 	case "expire":
-		pkg.HandleCmdExpire(p, e)
+		handler.HandleCmdExpire(p, e)
 	case "del":
-		pkg.HandleCmdDel(p, e)
+		handler.HandleCmdDel(p, e)
 	case "rdel":
-		pkg.HandleCmdRDel(p, e)
+		handler.HandleCmdRDel(p, e)
 	default:
 		fmt.Println("命令不存在")
 	}

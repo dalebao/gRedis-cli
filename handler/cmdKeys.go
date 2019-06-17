@@ -1,6 +1,8 @@
-package pkg
+package handler
 
 import (
+	"github.com/dalebao/gRedis-cli/analysis"
+	"github.com/dalebao/gRedis-cli/pkg"
 	"strconv"
 	"strings"
 )
@@ -68,7 +70,7 @@ func (keys *Keys) DiffType(res []string) (data [][]string) {
 		l = len(res)
 	}
 	for _, v := range res[:l] {
-		rType, _ := Client.Type(v).Result()
+		rType, _ := pkg.Client.Type(v).Result()
 
 		if lExpect != 0 && keys.Expect[rType] == true {
 			continue
@@ -77,20 +79,22 @@ func (keys *Keys) DiffType(res []string) (data [][]string) {
 		if lOnly != 0 && keys.Only[rType] == false {
 			continue
 		}
-		ttl, _ := Client.TTL(v).Result()
+		ttl, _ := pkg.Client.TTL(v).Result()
+		mem := analysis.Analysis(v)
 
+		info := []string{rType, v, ttl.String(), mem}
 
 		switch rType {
 		case "string":
-			keys.ST = append(keys.ST, []string{rType, v, ttl.String()})
+			keys.ST = append(keys.ST, info)
 		case "hash":
-			keys.HT = append(keys.HT, []string{rType, v, ttl.String()})
+			keys.HT = append(keys.HT, info)
 		case "list":
-			keys.LT = append(keys.LT, []string{rType, v, ttl.String()})
+			keys.LT = append(keys.LT, info)
 		case "set":
-			keys.SetT = append(keys.SetT, []string{rType, v, ttl.String()})
+			keys.SetT = append(keys.SetT, info)
 		case "zset":
-			keys.ZST = append(keys.ZST, []string{rType, v, ttl.String()})
+			keys.ZST = append(keys.ZST, info)
 		}
 	}
 	//desc

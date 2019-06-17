@@ -1,10 +1,11 @@
-package pkg
+package handler
 
 import (
 	"fmt"
 	"github.com/AlecAivazis/survey"
 	"github.com/bndr/gotabulate"
 	"github.com/dalebao/gRedis-cli/export"
+	"github.com/dalebao/gRedis-cli/pkg"
 	"strconv"
 	"time"
 )
@@ -13,7 +14,8 @@ import (
 redis keys 命令
  */
 func HandleCmdKey(params []string, e map[string]string) {
-	header := []string{"Type", "Key", "TTL"}
+	header := []string{"Type", "Key", "TTL", "Memory Size"}
+
 	res, _ := ScanKeys(0, params[0])
 	keys := &Keys{}
 	keys.Set(e)
@@ -39,24 +41,24 @@ hash=>hgetall
  */
 func HandleCmdGet(params []string, e map[string]string) {
 	rKey := params[0]
-	rType, _ := Client.Type(rKey).Result()
+	rType, _ := pkg.Client.Type(rKey).Result()
 	fmt.Println(rType)
 	switch rType {
 	case "none":
 		fmt.Println(rKey + "不存在")
 	case "string":
-		r, _ := Client.Get(rKey).Result()
+		r, _ := pkg.Client.Get(rKey).Result()
 		fmt.Println(r)
 	case "hash":
 		var data [][]string
-		r, _ := Client.HGetAll(rKey).Result()
+		r, _ := pkg.Client.HGetAll(rKey).Result()
 		for k, v := range r {
 			info := []string{k, v}
 			data = append(data, info)
 		}
 		printTable(data, []string{"Key", "Value"})
 	case "list":
-		r, _ := Client.LRange(rKey, 0, -1).Result()
+		r, _ := pkg.Client.LRange(rKey, 0, -1).Result()
 		var data [][]string
 		for _, v := range r {
 			info := []string{v}
@@ -64,7 +66,7 @@ func HandleCmdGet(params []string, e map[string]string) {
 		}
 		printTable(data, []string{"Value", "left->right"})
 	case "set":
-		r, _ := Client.SMembers(rKey).Result()
+		r, _ := pkg.Client.SMembers(rKey).Result()
 		var data [][]string
 		for _, v := range r {
 			info := []string{v}
@@ -73,7 +75,7 @@ func HandleCmdGet(params []string, e map[string]string) {
 		printTable(data, []string{"Value"})
 
 	case "zset":
-		r, _ := Client.ZRangeWithScores(rKey, 0, -1).Result()
+		r, _ := pkg.Client.ZRangeWithScores(rKey, 0, -1).Result()
 		var data [][]string
 		for _, v := range r {
 			member := fmt.Sprintf("%v", v.Member)
@@ -94,7 +96,7 @@ func HandleCmdType(params []string, e map[string]string) {
 	var data [][]string
 	for i := 0; i < kLen; i++ {
 		rKey := params[i]
-		rType, _ := Client.Type(rKey).Result()
+		rType, _ := pkg.Client.Type(rKey).Result()
 
 		info := []string{rKey, rType}
 		data = append(data, info)
@@ -111,7 +113,7 @@ func HandleCmdTTL(params []string, e map[string]string) {
 	var data [][]string
 	for i := 0; i < kLen; i++ {
 		rKey := params[i]
-		rType, _ := Client.TTL(rKey).Result()
+		rType, _ := pkg.Client.TTL(rKey).Result()
 
 		info := []string{rKey, rType.String()}
 		data = append(data, info)
@@ -126,10 +128,10 @@ func HandleCmdTTL(params []string, e map[string]string) {
 func HandleCmdExpire(params []string, e map[string]string) {
 	rKey := params[0]
 	rExpire, _ := strconv.Atoi(params[1])
-	Client.Expire(rKey, time.Duration(rExpire)*time.Second)
+	pkg.Client.Expire(rKey, time.Duration(rExpire)*time.Second)
 
 	var data [][]string
-	rType, _ := Client.TTL(rKey).Result()
+	rType, _ := pkg.Client.TTL(rKey).Result()
 	info := []string{rKey, rType.String()}
 	data = append(data, info)
 	printTable(data, []string{"Key", "TTL"})
@@ -144,7 +146,7 @@ func HandleCmdDel(params []string, e map[string]string) {
 	var data [][]string
 	for i := 0; i < rLen; i++ {
 		rKey := params[i]
-		res, _ := Client.Del(rKey).Result()
+		res, _ := pkg.Client.Del(rKey).Result()
 		r := "success"
 		if res == 0 {
 			r = "fail"
@@ -196,7 +198,7 @@ func printTable(data [][]string, k []string) {
 
 func ScanKeys(cursor uint64, re string) ([]string, uint64) {
 
-	res, c, _ := Client.Scan(cursor, re, 100).Result()
+	res, c, _ := pkg.Client.Scan(cursor, re, 100).Result()
 	if c != 0 {
 		r, _ := ScanKeys(c, re)
 		res = append(res, r...)
