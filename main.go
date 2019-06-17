@@ -55,6 +55,8 @@ func main() {
 		}
 	}
 
+	defer pkg.Client.Close()
+
 	for {
 		name := ""
 		prompt := &survey.Input{
