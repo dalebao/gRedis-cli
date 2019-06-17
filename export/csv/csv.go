@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"errors"
 	"os"
+	"sync"
 	"time"
 )
 
@@ -21,14 +22,38 @@ func (exportCsv *ExportCsv) Generator() (string, error) {
 	}
 	defer f.Close()
 
+	data := make(chan []string)
+	done := make(chan bool)
+	wg := sync.WaitGroup{}
+
+	for _, r := range exportCsv.Data {
+		wg.Add(1)
+		go func() {
+			data <- r
+			wg.Done()
+		}()
+	}
+
 	f.WriteString("\xEF\xBB\xBF") // 写入UTF-8 BOM
 	w := csv.NewWriter(f)
 	w.Write(exportCsv.Header)
-	for _, line := range exportCsv.Data {
-		w.Write(line)
+
+	go func() {
+		for line := range data {
+			w.Write(line)
+		}
+		done <- true
+	}()
+
+	go func() {
+		wg.Wait()
+		close(data)
+	}()
+
+	if <-done {
+		w.Flush()
 	}
 	w.Flush()
-
 	return fileName, nil
 }
 
