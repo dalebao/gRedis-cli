@@ -79,7 +79,7 @@ go run main.go
 4. 思考大量数据redis键的处理方式
 5. 期待在issue中与我交流
    
-##鸣谢
+## 鸣谢
 [命令行构建工具](https://github.com/AlecAivazis/survey)
 
 [golang表格构建工具](https://github.com/modood/table)
