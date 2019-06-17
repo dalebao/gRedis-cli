@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"errors"
 	"os"
+	"runtime"
 	"sync"
 	"time"
 )
@@ -15,6 +16,7 @@ type ExportCsv struct {
 }
 
 func (exportCsv *ExportCsv) Generator() (string, error) {
+	runtime.GOMAXPROCS(4)
 	fileName := generateAddr(exportCsv.FileName)
 	f, err := os.Create(fileName)
 	if (err != nil) {
@@ -53,7 +55,6 @@ func (exportCsv *ExportCsv) Generator() (string, error) {
 	if <-done {
 		w.Flush()
 	}
-	w.Flush()
 	return fileName, nil
 }
 
