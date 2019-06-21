@@ -4,8 +4,6 @@ import (
 	"encoding/csv"
 	"errors"
 	"os"
-	"runtime"
-	"sync"
 	"time"
 )
 
@@ -16,7 +14,6 @@ type ExportCsv struct {
 }
 
 func (exportCsv *ExportCsv) Generator() (string, error) {
-	runtime.GOMAXPROCS(4)
 	fileName := generateAddr(exportCsv.FileName)
 	f, err := os.Create(fileName)
 	if (err != nil) {
@@ -24,37 +21,16 @@ func (exportCsv *ExportCsv) Generator() (string, error) {
 	}
 	defer f.Close()
 
-	data := make(chan []string)
-	done := make(chan bool)
-	wg := sync.WaitGroup{}
-
-	for _, r := range exportCsv.Data {
-		wg.Add(1)
-		go func() {
-			data <- r
-			wg.Done()
-		}()
-	}
-
 	f.WriteString("\xEF\xBB\xBF") // 写入UTF-8 BOM
 	w := csv.NewWriter(f)
 	w.Write(exportCsv.Header)
 
-	go func() {
-		for line := range data {
+		for _, line := range exportCsv.Data {
 			w.Write(line)
 		}
-		done <- true
-	}()
-
-	go func() {
-		wg.Wait()
-		close(data)
-	}()
-
-	if <-done {
 		w.Flush()
-	}
+
+
 	return fileName, nil
 }
 

@@ -21,12 +21,14 @@ func HandleCmdKey(params []string, e map[string]string) {
 	keys.Set(e)
 	data := keys.DiffType(res)
 	if keys.Export != "" {
+		fmt.Println("start...", time.Now())
 		uExport := &export.UExport{FileName: "keys-" + params[0], Data: data, Type: keys.Export, Header: header}
 		fileName, err := uExport.Export()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
+		fmt.Println("endkeys ...", time.Now())
 		fmt.Println("导出结果成功，文件名为：" + fileName)
 	} else {
 		printTable(data, header)
