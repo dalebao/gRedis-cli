@@ -24,10 +24,12 @@ func (exportCsv *ExportCsv) Generator() (string, error) {
 	f.WriteString("\xEF\xBB\xBF") // 写入UTF-8 BOM
 	w := csv.NewWriter(f)
 	w.Write(exportCsv.Header)
-	for _, line := range exportCsv.Data {
-		w.Write(line)
-	}
-	w.Flush()
+
+		for _, line := range exportCsv.Data {
+			w.Write(line)
+		}
+		w.Flush()
+
 
 	return fileName, nil
 }
